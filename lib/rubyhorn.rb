@@ -17,28 +17,29 @@ module Rubyhorn
   @config_options ||= {}
 
   # Initializes Rubyhorn based on the info in MATTERHORN_URL or matterhorn.yml
-  # 
+  #
   # If Rails.env is set, it will use that environment.  Defaults to "development".
   # @param [Hash] options (optional) a list of options for the configuration of rubyhorn
   # @option options [String] :environment The environment within which to run
   # @option options [String] :config_path The full path to the matterhorn.yml config file.
-  # 
+  #
   # If MATTERHORN_URL is set, it will be used for whatever the current environment is. If not:
-  # 
-  # If :environment is not set, order of preference is 
+  #
+  # If :environment is not set, order of preference is
   # 1. Rails.env
   # 2. ENV['environment']
   # 3. RAILS_ENV
   #
-  # If :config_path is not set, it will look in 
+  # If :config_path is not set, it will look in
   # 1. +Rails.root+/config
   # 2. +current working directory+/config
   # 3. (default) the matterhorn.yml shipped with gem
 
   # Options allowed in matterhorn.yml
-  # first level is the environment (e.g. development, test, production and any custom environments you may have) 
+  # first level is the environment (e.g. development, test, production and any custom environments you may have)
   # the second level has these keys:
   # 1. url: url including protocol, user/pass, host, port, and path (e.g. http://matterhorn_system_account:CHANGE_ME@127.0.0.1:8080/)
+  # 2. timeout: timeout value for response time from matterhorn
 
   def self.init( options={} )
     # Make config_options into a Hash if nil is passed in as the value
@@ -96,11 +97,11 @@ module Rubyhorn
   # 4. ENV['RAILS_ENV']
   # 5. development
   # @return [String]
-  # @example 
+  # @example
   #  Rubyhorn.init(:environment=>"test")
   #  Rubyhorn.environment => "test"
   def self.environment
-    @config_env ||= 
+    @config_env ||=
       if config_options.fetch(:environment,nil)
         config_options[:environment]
       elsif defined?(Rails.env) and !Rails.env.nil?
@@ -127,16 +128,16 @@ module Rubyhorn
       raise RubyhornConfigurationException, "file does not exist #{config_path}" unless File.file? config_path
       return config_path
     end
-    
+
     if defined?(Rails.root)
       config_path = "#{Rails.root}/config/matterhorn.yml"
       return config_path if File.file? config_path
     end
-    
-    if File.file? "#{Dir.getwd}/config/matterhorn.yml"  
+
+    if File.file? "#{Dir.getwd}/config/matterhorn.yml"
       return "#{Dir.getwd}/config/matterhorn.yml"
     end
-    
+
     # Last choice, check for the default config file
     config_path = File.expand_path(File.join(File.dirname(__FILE__), "..", "config", "matterhorn.yml"))
     logger.warn "Using the default matterhorn.yml that comes with rubyhorn.  If you want to override this, pass the path to matterhorn.yml to Rubyhorn - ie. Rubyhorn.init(:config_path => '/path/to/matterhorn.yml) - or set Rails.root and put matterhorn.yml into \#{Rails.root}/config."

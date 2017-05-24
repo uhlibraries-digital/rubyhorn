@@ -6,7 +6,15 @@ module Rubyhorn::RestClient
   module Common
 
     def connect
-      @client = RestClient::Resource.new(config[:url], headers: {'X-REQUESTED-AUTH'=>'Digest'})
+      if !config[:timeout].present?
+        config[:timeout] = 10
+      end
+
+      @client = RestClient::Resource.new(
+        config[:url],
+        headers: {'X-REQUESTED-AUTH'=>'Digest'},
+        timeout: config[:timeout]
+      )
       login
     end
 

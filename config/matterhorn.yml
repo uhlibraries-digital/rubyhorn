@@ -1,7 +1,9 @@
 development:
   url: http://matterhorn_system_account:CHANGE_ME@127.0.0.1:8080/
+  timeout: 10
 test:
   url: http://matterhorn_system_account:CHANGE_ME@127.0.0.1:8080/
+  timeout: 10
 production:
   url: http://matterhorn_system_account:CHANGE_ME@127.0.0.1:8080/
-
+  timeout: 10
